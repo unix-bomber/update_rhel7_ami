@@ -1,0 +1,18 @@
+---
+
+ - name: provision an ec2 instance from ami
+   hosts: localhost
+   roles:
+     - provision-ec2
+
+ - name: update an ec2 instance
+   hosts: aws
+   become: yes
+   roles:
+     - update-ec2
+     - RHEL7-STIG
+
+ - name: make ami from ec2 instance
+   hosts: localhost
+   roles:
+     - update-ami

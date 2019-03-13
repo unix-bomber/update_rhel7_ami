@@ -1,0 +1,41 @@
+---
+
+  - name: Create an ec2 instance based on an existing AMI
+    ec2:
+      aws_access_key: "{{ access_key }}"
+      aws_secret_key: "{{ secret_key }}"
+      key_name: "{{ keypairname }}"
+      image: "{{ ami_id }}"
+      assign_public_ip: yes
+      vpc_subnet_id: "{{ vpcsubnet }} "
+      region: "{{ region }}"
+      instance_type: t2.micro
+      group: "{{ security_group }}"
+      zone: "{{ zone }}"
+      wait: yes
+      ec2_url: "{{ url }}"
+    register: updated_ami
+
+  - name: Add new instance to host group
+    add_host:
+      name: "{{ item.public_dns_name }}"
+      groups: aws
+      ansible_ssh_private_key_file: "{{ ec2_server_pem_path }}"
+      ansible_ssh_user: "{{ ec2_server_ansible_ssh_user }}"
+    with_items: "{{ updated_ami.instances }}"
+
+  - name: Wait for device to finish provisioning
+    wait_for:
+      host: "{{ item.public_dns_name }}"
+      port: 22
+      delay: 60
+      timeout: 320
+      state: started
+    with_items: "{{ updated_ami.instances }}"
+
+#Bring AMI online
+#Create EC2 instance
+#Update EC2 instance
+#Reboot if required
+#STIG
+#SCAP

@@ -1,0 +1,21 @@
+---
+
+  - name: Upgrade all packages
+    yum:
+      name: '*'
+      state: latest
+
+  - name: Reboot after upgrade
+    command: shutdown -r
+    async: 0
+
+  - name: Wait for device to finish updating
+    delegate_to: localhost
+    wait_for:
+      host: "{{ item.public_dns_name }}"
+      port: 22
+      delay: 65
+      timeout: 320
+      state: started
+    with_items: "{{ hostvars.localhost.updated_ami.instances }}"
+

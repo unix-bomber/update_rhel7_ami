@@ -1,0 +1,32 @@
+---
+  
+  - name: set the timedate
+    set_fact:
+      timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
+
+  - name: create new updated AMI
+    ec2_ami:
+      aws_access_key: "{{ access_key }}"
+      aws_secret_key: "{{ secret_key }}"
+      description: Baseline playbook for testing purposes
+      instance_id: "{{ item.id }}"
+      name: "{{ operatingsystem }} {{ timestamp }}"
+      ec2_url: "{{ url }}"
+      region: "{{ region }}"
+      state: present
+      wait: yes
+    with_items: "{{ updated_ami.instances }}"
+
+  - name: Delete the ec2 instance used to create the AMI
+    ec2:
+      aws_access_key: "{{ access_key }}"
+      aws_secret_key: "{{ secret_key }}"
+      key_name: "{{ keypairname }}"
+      instance_ids: "{{ item.id }}"
+      image: "{{ ami_id }}"
+      region: "{{ region }}"
+      zone: "{{ zone }}"
+      wait: yes
+      state: absent
+      ec2_url: "{{ url }}"
+    with_items: "{{ updated_ami.instances }}"
