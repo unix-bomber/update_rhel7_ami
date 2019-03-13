@@ -5,10 +5,10 @@ access_key: FAKEKEYFAKEKEY
 secret_key: FAKEKEYFAKEKEYFAKEKEYFAKEKEY
 url: apigateway.us-east-2.amazonaws.com
 region: us-east-2
-security_group: launch-wizard-1
-vpcsubnet: subnet-62f56b0a
+security_group: FAKE
+vpcsubnet: subnet-FAKE
 zone: us-east-2a
 operatingsystem: Rhel7
-keypairname: tim_temp
-ec2_server_pem_path: /home/administrator/tim_temp.pem
+keypairname: temp
+ec2_server_pem_path: /home/administrator/temp.pem
 ec2_server_ansible_ssh_user: ec2-user
